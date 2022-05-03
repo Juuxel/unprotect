@@ -5,11 +5,11 @@ plugins {
 }
 
 group = "io.github.juuxel"
-version = "0.0.6"
+version = "0.0.7"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
     withSourcesJar()
 }
 
@@ -20,13 +20,21 @@ repositories {
 
 dependencies {
     compileOnly("org.jetbrains:annotations:23.0.0")
-    compileOnly("cpw.mods:modlauncher:9.0.4")
+    compileOnly("cpw.mods:modlauncher:8.0.9")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    testImplementation("cpw.mods:modlauncher:9.0.4")
+    testImplementation("cpw.mods:modlauncher:8.0.9")
 }
 
 tasks {
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+
+        if (JavaVersion.current().isJava9Compatible) {
+            options.release.set(8)
+        }
+    }
+
     jar {
         from("LICENSE")
     }
