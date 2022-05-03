@@ -1,6 +1,6 @@
 # Unprotect
 
-Experimental [ModLauncher](https://github.com/McModLauncher/modlauncher) plugin
+A [ModLauncher](https://github.com/McModLauncher/modlauncher) plugin
 that makes all protected and package-private code public.
 
 This enables running Minecraft with FML using Yarn or Quilt Mappings,

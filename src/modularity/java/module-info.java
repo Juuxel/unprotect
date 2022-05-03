@@ -4,6 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/**
+ * Provides {@link juuxel.unprotect.UnprotectLaunchPlugin} as a ModLauncher
+ * {@linkplain cpw.mods.modlauncher.serviceapi.ILaunchPluginService launch plugin service}.
+ */
 module io.github.juuxel.unprotect {
     requires org.objectweb.asm.tree;
     requires cpw.mods.modlauncher;

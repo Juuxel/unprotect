@@ -17,6 +17,11 @@ import org.objectweb.asm.tree.MethodNode;
 
 import java.util.EnumSet;
 
+/**
+ * Unprotect's launch plugin service that processes the necessary classes.
+ * The transformations only run for non-empty classes in the
+ * {@link cpw.mods.modlauncher.serviceapi.ILaunchPluginService.Phase#AFTER AFTER} phase.
+ */
 public final class UnprotectLaunchPlugin implements ILaunchPluginService {
     // Package-private doesn't have its own access flag and is used when there's
     // none of these other flags.
