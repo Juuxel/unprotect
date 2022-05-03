@@ -28,13 +28,13 @@ repositories {
 
 dependencies {
     compileOnly(libs.jetbrains.annotations)
-    compileOnly(libs.modlauncher8)
+    compileOnly(libs.modlauncher4)
 
     "modularityCompileOnly"(libs.jetbrains.annotations)
     "modularityCompileOnly"(libs.modlauncher9)
 
     testImplementation(libs.junit.jupiter)
-    testImplementation(libs.modlauncher8)
+    testImplementation(libs.modlauncher4)
 }
 
 tasks {
