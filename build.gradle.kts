@@ -51,6 +51,5 @@ publishing {
 spotless {
     java {
         licenseHeaderFile("HEADER.txt")
-        importOrder()
     }
 }
