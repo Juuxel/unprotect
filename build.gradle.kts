@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.juuxel"
-version = "0.0.7"
+version = "1.0.0"
 
 val modularity = sourceSets.register("modularity") {
     java {
