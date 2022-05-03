@@ -1,0 +1,11 @@
+[versions]
+modlauncher8 = "8.0.9"
+modlauncher9 = "9.0.4"
+jetbrains-annotations = "23.0.0"
+junit = "5.8.2"
+
+[libraries]
+modlauncher8 = { module = "cpw.mods:modlauncher", version.ref = "modlauncher8" }
+modlauncher9 = { module = "cpw.mods:modlauncher", version.ref = "modlauncher9" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }

@@ -25,17 +25,14 @@ repositories {
 }
 
 dependencies {
-    val modLauncher8 = "8.0.9"
-    val modLauncher9 = "9.0.4"
+    compileOnly(libs.jetbrains.annotations)
+    compileOnly(libs.modlauncher8)
 
-    compileOnly("org.jetbrains:annotations:23.0.0")
-    compileOnly("cpw.mods:modlauncher:$modLauncher8")
+    "modularityCompileOnly"(libs.jetbrains.annotations)
+    "modularityCompileOnly"(libs.modlauncher9)
 
-    "modularityCompileOnly"("org.jetbrains:annotations:23.0.0")
-    "modularityCompileOnly"("cpw.mods:modlauncher:$modLauncher9")
-
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    testImplementation("cpw.mods:modlauncher:$modLauncher8")
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.modlauncher8)
 }
 
 tasks {
