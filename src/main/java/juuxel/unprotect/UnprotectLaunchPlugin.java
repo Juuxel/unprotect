@@ -7,6 +7,8 @@
 package juuxel.unprotect;
 
 import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Opcodes;
@@ -40,6 +42,8 @@ public final class UnprotectLaunchPlugin implements ILaunchPluginService {
      */
     public static final String TARGET_SYSTEM_PROPERTY = "unprotect.target";
 
+    static final Logger LOGGER = LogManager.getLogger("unprotect");
+
     // Package-private doesn't have its own access flag and is used when there's
     // none of these other flags.
     private static final int ACCESS_MASK = Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE;
@@ -58,7 +62,7 @@ public final class UnprotectLaunchPlugin implements ILaunchPluginService {
             target = Target.BY_ID.get(targetId);
 
             if (target == null) {
-                // TODO: logger
+                LOGGER.error("Unknown Unprotect target: {} (available: {})", targetId, Target.BY_ID.keySet());
                 target = Target.MINECRAFT_AND_FORGE;
             }
         }

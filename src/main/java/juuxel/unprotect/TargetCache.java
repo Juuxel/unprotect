@@ -23,15 +23,26 @@ final class TargetCache {
     private static final String CLASS_PREFIX = "c\t";
     private final @Nullable Set<String> minecraftClasses = loadClasses();
 
+    TargetCache() {
+        if (minecraftClasses == null) {
+            UnprotectLaunchPlugin.LOGGER.warn("Could not load mappings from classpath, falling back to checking packages");
+        } else {
+            UnprotectLaunchPlugin.LOGGER.info("Found {} Minecraft classes", minecraftClasses.size());
+        }
+    }
+
     private @Nullable Set<String> loadClasses() {
         try (InputStream in = TargetCache.class.getResourceAsStream("/mappings/mappings.tiny")) {
-            if (in == null) return null;
+            if (in == null) {
+                UnprotectLaunchPlugin.LOGGER.warn("Mappings not available on classpath at /mappings/mappings.tiny");
+                return null;
+            }
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
                 return loadClasses(reader);
             }
         } catch (IOException e) {
-            // TODO: log
+            UnprotectLaunchPlugin.LOGGER.error("Could not load mappings", e);
             return null;
         }
     }
@@ -46,7 +57,7 @@ final class TargetCache {
 
             // Unknown mapping format
             if (!first.startsWith(TINY_2_0_PREFIX)) {
-                // TODO: Warn
+                UnprotectLaunchPlugin.LOGGER.warn("Unknown mapping format, should be Tiny v2");
                 return null;
             }
 
@@ -55,7 +66,7 @@ final class TargetCache {
             namespaceIndex = namespaces.indexOf("named");
 
             if (namespaceIndex == -1) {
-                // TODO: Warn
+                UnprotectLaunchPlugin.LOGGER.warn("Could not find namespace 'named' in mappings (available: {})", namespaces);
                 return null;
             }
         }
@@ -82,7 +93,6 @@ final class TargetCache {
         if (minecraftClasses != null) {
             return minecraftClasses.contains(type.getInternalName());
         } else {
-            // TODO: Warn
             String internalName = type.getInternalName();
             return internalName.startsWith(Packages.MINECRAFT) || internalName.startsWith(Packages.MOJANG);
         }

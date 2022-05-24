@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.juuxel"
-version = "1.0.0"
+version = "1.1.0-beta.1"
 
 val modularitySourceSet = sourceSets.register("modularity") {
     java {
@@ -29,9 +29,11 @@ repositories {
 dependencies {
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.modlauncher4)
+    implementation(libs.log4j.api)
 
     "modularityCompileOnly"(libs.jetbrains.annotations)
     "modularityCompileOnly"(libs.modlauncher9)
+    "modularityImplementation"(libs.log4j.api)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.modlauncher4)
