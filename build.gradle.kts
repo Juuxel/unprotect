@@ -8,6 +8,7 @@ plugins {
 group = "io.github.juuxel"
 version = "1.1.0-beta.1"
 
+val modularityJavaVersion = 16
 val modularitySourceSet = sourceSets.register("modularity") {
     java {
         srcDirs(sourceSets.main.map { it.java.srcDirs })
@@ -46,7 +47,8 @@ tasks {
     }
 
     "compileModularityJava"(JavaCompile::class) {
-        options.release.set(16)
+        options.release.set(modularityJavaVersion)
+        options.compilerArgs.addAll(listOf("--module-version", project.version.toString()))
     }
 
     javadoc {
@@ -58,6 +60,10 @@ tasks {
         from("LICENSE")
         from(modularitySourceSet.map { it.output }) {
             include("module-info.class")
+            into("META-INF/versions/$modularityJavaVersion")
+        }
+        manifest {
+            attributes("Multi-Release" to "true")
         }
     }
 
@@ -65,6 +71,7 @@ tasks {
         from("LICENSE")
         from(modularitySourceSet.map { it.allSource }) {
             include("module-info.java")
+            into("META-INF/versions/$modularityJavaVersion")
         }
     }
 
