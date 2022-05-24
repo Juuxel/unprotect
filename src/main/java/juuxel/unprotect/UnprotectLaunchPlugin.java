@@ -62,7 +62,7 @@ public final class UnprotectLaunchPlugin implements ILaunchPluginService {
             target = Target.BY_ID.get(targetId);
 
             if (target == null) {
-                LOGGER.error("Unknown Unprotect target: {} (available: {})", targetId, Target.BY_ID.keySet());
+                LOGGER.error("Unknown Unprotect target: {} (available: {}), falling back to minecraft+forge", targetId, Target.BY_ID.keySet());
                 target = Target.MINECRAFT_AND_FORGE;
             }
         }
