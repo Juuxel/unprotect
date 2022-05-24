@@ -7,6 +7,7 @@
 package juuxel.unprotect;
 
 import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -16,6 +17,8 @@ import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Unprotect's launch plugin service that processes the necessary classes.
@@ -23,18 +26,69 @@ import java.util.EnumSet;
  * {@link cpw.mods.modlauncher.serviceapi.ILaunchPluginService.Phase#AFTER AFTER} phase.
  */
 public final class UnprotectLaunchPlugin implements ILaunchPluginService {
+    /**
+     * A system property ({@value}) for determining which classes to transform.
+     *
+     * <p>Possible values (case-insensitive with respect to {@link java.util.Locale#ROOT}):
+     * <ul>
+     *     <li>{@code all}: apply to all classes</li>
+     *     <li>{@code minecraft+forge} (default): apply to Minecraft and Forge classes</li>
+     *     <li>{@code none}: disable Unprotect completely and apply to no classes</li>
+     * </ul>
+     *
+     * @since 1.1.0
+     */
+    public static final String TARGET_SYSTEM_PROPERTY = "unprotect.target";
+
     // Package-private doesn't have its own access flag and is used when there's
     // none of these other flags.
     private static final int ACCESS_MASK = Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE;
+
+    private @Nullable Target target;
+    private @Nullable TargetCache targetCache;
 
     @Override
     public String name() {
         return "unprotect";
     }
 
+    private Target getTarget() {
+        if (target == null) {
+            String targetId = System.getProperty(TARGET_SYSTEM_PROPERTY, Target.MINECRAFT_AND_FORGE.id);
+            target = Target.BY_ID.get(targetId);
+
+            if (target == null) {
+                // TODO: logger
+                target = Target.MINECRAFT_AND_FORGE;
+            }
+        }
+
+        return target;
+    }
+
     @Override
     public EnumSet<Phase> handlesClass(Type classType, boolean isEmpty) {
-        return !isEmpty ? EnumSet.of(Phase.AFTER) : EnumSet.noneOf(Phase.class);
+        if (isEmpty) {
+            return EnumSet.noneOf(Phase.class);
+        }
+
+        switch (getTarget()) {
+            case ALL:
+                return EnumSet.of(Phase.AFTER);
+            case MINECRAFT_AND_FORGE:
+                if (classType.getInternalName().startsWith(Packages.FORGE)) {
+                    return EnumSet.of(Phase.AFTER);
+                }
+
+                if (targetCache == null) {
+                    targetCache = new TargetCache();
+                }
+
+                return targetCache.isMinecraftClass(classType) ? EnumSet.of(Phase.AFTER) : EnumSet.noneOf(Phase.class);
+            case NONE:
+            default:
+                return EnumSet.noneOf(Phase.class);
+        }
     }
 
     @Override
@@ -72,5 +126,24 @@ public final class UnprotectLaunchPlugin implements ILaunchPluginService {
         if ((access & Opcodes.ACC_PRIVATE) != 0) return access;
 
         return (access & ~ACCESS_MASK) | Opcodes.ACC_PUBLIC;
+    }
+
+    private enum Target {
+        ALL("all"),
+        MINECRAFT_AND_FORGE("minecraft+forge"),
+        NONE("none");
+
+        private static final Map<String, Target> BY_ID = new HashMap<>();
+        private final String id;
+
+        Target(String id) {
+            this.id = id;
+        }
+
+        static {
+            for (Target target : values()) {
+                BY_ID.put(target.id, target);
+            }
+        }
     }
 }
