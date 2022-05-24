@@ -3,7 +3,8 @@ modlauncher4 = "4.1.0"
 modlauncher9 = "9.0.4"
 jetbrains-annotations = "23.0.0"
 junit = "5.8.2"
-log4j = "2.17.2"
+# The version used by the minimum supported ModLauncher version.
+log4j = "2.11.2"
 
 [libraries]
 modlauncher4 = { module = "cpw.mods:modlauncher", version.ref = "modlauncher4" }
