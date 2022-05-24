@@ -42,6 +42,20 @@ public final class UnprotectLaunchPlugin implements ILaunchPluginService {
      */
     public static final String TARGET_SYSTEM_PROPERTY = "unprotect.target";
 
+    /**
+     * A system property ({@value}) for determining where to load mappings for
+     * the {@code minecraft+forge} {@linkplain #TARGET_SYSTEM_PROPERTY target}.
+     *
+     * <p>The value should be a file path to a zip containing the mapping files at {@code mappings/mappings.tiny}
+     * in Tiny v2 format. It can also be a list of file paths separated by {@link java.io.File#pathSeparator},
+     * of which the first suitable one will be used.
+     *
+     * <p>If absent, Unprotect will try to load them from the classpath at the same file path.
+     *
+     * @since 1.2.0
+     */
+    public static final String MAPPING_LOCATION_SYSTEM_PROPERTY = "unprotect.mappings";
+
     static final Logger LOGGER = LogManager.getLogger("unprotect");
 
     // Package-private doesn't have its own access flag and is used when there's

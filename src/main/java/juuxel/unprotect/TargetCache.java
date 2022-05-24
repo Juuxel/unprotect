@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +18,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 final class TargetCache {
     private static final String TINY_2_0_PREFIX = "tiny\t2\t0\t";
@@ -32,18 +36,38 @@ final class TargetCache {
     }
 
     private @Nullable Set<String> loadClasses() {
-        try (InputStream in = TargetCache.class.getResourceAsStream("/mappings/mappings.tiny")) {
+        try (@Nullable CloseableContainer<InputStream> in = getMappingStream()) {
             if (in == null) {
-                UnprotectLaunchPlugin.LOGGER.warn("Mappings not available on classpath at /mappings/mappings.tiny");
+                UnprotectLaunchPlugin.LOGGER.warn(
+                    "Mappings not available! (mappings/mappings.tiny in {})",
+                    System.getProperty(UnprotectLaunchPlugin.MAPPING_LOCATION_SYSTEM_PROPERTY, "classpath")
+                );
                 return null;
             }
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in.value))) {
                 return loadClasses(reader);
             }
         } catch (IOException e) {
             UnprotectLaunchPlugin.LOGGER.error("Could not load mappings", e);
             return null;
+        }
+    }
+
+    private @Nullable CloseableContainer<InputStream> getMappingStream() throws IOException {
+        String pathString = System.getProperty(UnprotectLaunchPlugin.MAPPING_LOCATION_SYSTEM_PROPERTY);
+
+        if (pathString != null) {
+            for (String path : pathString.split(Pattern.quote(File.pathSeparator))) {
+                ZipFile zip = new ZipFile(new File(path));
+                ZipEntry entry = zip.getEntry("mappings/mappings.tiny");
+                if (entry == null) continue;
+                return CloseableContainer.of(zip.getInputStream(entry), zip);
+            }
+
+            return null;
+        } else {
+            return CloseableContainer.of(TargetCache.class.getResourceAsStream("/mappings/mappings.tiny"));
         }
     }
 
