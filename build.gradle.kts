@@ -9,7 +9,11 @@ group = "io.github.juuxel"
 version = "1.3.0"
 
 val modularityJavaVersion = 16
-val modularitySourceSet = sourceSets.register("modularity")
+val modularitySourceSet = sourceSets.register("modularity") {
+    java {
+        srcDirs(sourceSets.main.map { it.java.srcDirs })
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -30,8 +34,7 @@ dependencies {
 
     "modularityCompileOnly"(libs.jetbrains.annotations)
     "modularityCompileOnly"(libs.modlauncher9)
-    "modularityCompileOnly"(libs.log4j.api)
-    "modularityCompileOnly"(sourceSets.main.get().output)
+    "modularityImplementation"(libs.log4j.api)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.modlauncher4)
@@ -49,7 +52,7 @@ tasks {
     }
 
     javadoc {
-        source(modularitySourceSet.get().allJava)
+        source = modularitySourceSet.get().allJava
         classpath = modularitySourceSet.get().compileClasspath
     }
 
@@ -70,6 +73,7 @@ tasks {
     "sourcesJar"(Jar::class) {
         from("LICENSE")
         from(modularitySourceSet.map { it.allSource }) {
+            include("module-info.java")
             into("META-INF/versions/$modularityJavaVersion")
         }
     }
