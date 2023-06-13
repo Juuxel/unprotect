@@ -6,7 +6,7 @@
 
 package juuxel.unprotect;
 
-import static juuxel.unprotect.UnprotectLaunchPlugin.changeAccess;
+import static juuxel.unprotect.Transformation.changeAccess;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;

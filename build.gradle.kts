@@ -63,7 +63,10 @@ tasks {
             into("META-INF/versions/$modularityJavaVersion")
         }
         manifest {
-            attributes("Multi-Release" to "true")
+            attributes(
+                "Multi-Release" to "true",
+                "Premain-Class" to "juuxel.unprotect.UnprotectAgent",
+            )
         }
     }
 

@@ -5,14 +5,25 @@
  */
 
 /**
- * Provides {@link juuxel.unprotect.UnprotectLaunchPlugin} as a ModLauncher
- * {@linkplain cpw.mods.modlauncher.serviceapi.ILaunchPluginService launch plugin service}.
+ * Provides Unprotect, a ModLauncher plugin and Java agent.
+ *
+ * <p>Unprotect has two runtime implementations:
+ * <ul>
+ *     <li>{@link juuxel.unprotect.UnprotectLaunchPlugin} as a ModLauncher
+ *     {@linkplain cpw.mods.modlauncher.serviceapi.ILaunchPluginService launch plugin service}
+ *     <li>{@link juuxel.unprotect.UnprotectAgent} as an agent class
+ * </ul>
  */
 module io.github.juuxel.unprotect {
     requires org.objectweb.asm.tree;
-    requires cpw.mods.modlauncher;
     requires org.apache.logging.log4j;
     requires static org.jetbrains.annotations;
+
+    // For the ModLauncher launch plugin service.
+    requires static cpw.mods.modlauncher;
+
+    // For the instrumentation feature.
+    requires static java.instrument;
 
     provides cpw.mods.modlauncher.serviceapi.ILaunchPluginService with juuxel.unprotect.UnprotectLaunchPlugin;
 }

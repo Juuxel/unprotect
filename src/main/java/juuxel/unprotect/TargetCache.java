@@ -29,18 +29,18 @@ final class TargetCache {
 
     TargetCache() {
         if (minecraftClasses == null) {
-            UnprotectLaunchPlugin.LOGGER.warn("Could not load mappings from classpath, falling back to checking packages");
+            Transformation.LOGGER.warn("Could not load mappings from classpath, falling back to checking packages");
         } else {
-            UnprotectLaunchPlugin.LOGGER.info("Found {} Minecraft classes", minecraftClasses.size());
+            Transformation.LOGGER.info("Found {} Minecraft classes", minecraftClasses.size());
         }
     }
 
     private @Nullable Set<String> loadClasses() {
         try (@Nullable CloseableContainer<InputStream> in = getMappingStream()) {
             if (in == null) {
-                UnprotectLaunchPlugin.LOGGER.warn(
+                Transformation.LOGGER.warn(
                     "Mappings not available! (mappings/mappings.tiny in {})",
-                    System.getProperty(UnprotectLaunchPlugin.MAPPING_LOCATION_SYSTEM_PROPERTY, "classpath")
+                    System.getProperty(Transformation.MAPPING_LOCATION_SYSTEM_PROPERTY, "classpath")
                 );
                 return null;
             }
@@ -49,13 +49,13 @@ final class TargetCache {
                 return loadClasses(reader);
             }
         } catch (IOException e) {
-            UnprotectLaunchPlugin.LOGGER.error("Could not load mappings", e);
+            Transformation.LOGGER.error("Could not load mappings", e);
             return null;
         }
     }
 
     private @Nullable CloseableContainer<InputStream> getMappingStream() throws IOException {
-        String pathString = System.getProperty(UnprotectLaunchPlugin.MAPPING_LOCATION_SYSTEM_PROPERTY);
+        String pathString = System.getProperty(Transformation.MAPPING_LOCATION_SYSTEM_PROPERTY);
 
         if (pathString != null) {
             for (String path : pathString.split(Pattern.quote(File.pathSeparator))) {
@@ -81,7 +81,7 @@ final class TargetCache {
 
             // Unknown mapping format
             if (!first.startsWith(TINY_2_0_PREFIX)) {
-                UnprotectLaunchPlugin.LOGGER.warn("Unknown mapping format, should be Tiny v2");
+                Transformation.LOGGER.warn("Unknown mapping format, should be Tiny v2");
                 return null;
             }
 
@@ -90,7 +90,7 @@ final class TargetCache {
             namespaceIndex = namespaces.indexOf("named");
 
             if (namespaceIndex == -1) {
-                UnprotectLaunchPlugin.LOGGER.warn("Could not find namespace 'named' in mappings (available: {})", namespaces);
+                Transformation.LOGGER.warn("Could not find namespace 'named' in mappings (available: {})", namespaces);
                 return null;
             }
         }
