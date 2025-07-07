@@ -6,12 +6,24 @@ plugins {
 }
 
 group = "io.github.juuxel"
-version = "1.3.0"
+version = "1.3.1"
 
 val modularityJavaVersion = 16
 val modularitySourceSet = sourceSets.register("modularity") {
     java {
         srcDirs(sourceSets.main.map { it.java.srcDirs })
+    }
+}
+
+// Generate a fake FML jar to compile against. We only want one instance of
+// the ModLauncher API on the compile classpath, so the other instance is
+// represented by an empty jar.
+val fakeFancyModLoaderJar = tasks.register<Jar>("fakeFancyModLoaderJar") {
+    destinationDirectory.set(layout.buildDirectory.dir("generated/fakeFml"))
+    archiveFileName.set("fake_fml.jar")
+
+    manifest {
+        attributes("Automatic-Module-Name" to "fml_loader")
     }
 }
 
@@ -35,6 +47,7 @@ dependencies {
     "modularityCompileOnly"(libs.jetbrains.annotations)
     "modularityCompileOnly"(libs.modlauncher9)
     "modularityImplementation"(libs.log4j.api)
+    "modularityCompileOnly"(fakeFancyModLoaderJar.map { it.outputs.files })
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.modlauncher4)

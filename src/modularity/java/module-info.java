@@ -21,6 +21,7 @@ module io.github.juuxel.unprotect {
 
     // For the ModLauncher launch plugin service.
     requires static cpw.mods.modlauncher;
+    requires static fml_loader;
 
     // For the instrumentation feature.
     requires static java.instrument;
