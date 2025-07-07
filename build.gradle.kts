@@ -128,14 +128,34 @@ publishing {
                 }
             }
         }
+    }
+}
 
+if (System.getenv("MAVEN_CENTRAL_USERNAME") != null) {
+    val centralUsername = System.getenv("MAVEN_CENTRAL_USERNAME")
+    val centralPassword = System.getenv("MAVEN_CENTRAL_PASSWORD")
+
+    publishing {
         repositories {
             maven {
-                name = "ossrh"
-                url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-                credentials(PasswordCredentials::class)
+                name = "ossrh-staging-api"
+                url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
+                credentials {
+                    username = centralUsername
+                    password = centralPassword
+                }
             }
         }
+    }
+
+    val uploadTask = tasks.register<juuxel.unprotect.gradle.UploadDefaultCentralRepository>("uploadDefaultCentralRepository") {
+        dependsOn("publishMavenPublicationToOssrh-staging-apiRepository")
+        username.set(centralUsername)
+        password.set(centralPassword)
+    }
+
+    tasks.named("publish") {
+        dependsOn(uploadTask)
     }
 }
 
