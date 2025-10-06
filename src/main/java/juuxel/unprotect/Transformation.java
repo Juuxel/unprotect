@@ -55,7 +55,9 @@ final class Transformation {
             case ALL:
                 return true;
             case MINECRAFT_AND_FORGE:
-                if (classType.getInternalName().startsWith(Packages.FORGE)) {
+                String internalName = classType.getInternalName();
+
+                if (internalName.startsWith(Packages.FORGE) || internalName.startsWith(Packages.NEOFORGE)) {
                     return true;
                 }
 

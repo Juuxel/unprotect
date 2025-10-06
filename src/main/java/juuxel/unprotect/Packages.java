@@ -10,4 +10,5 @@ final class Packages {
     static final String MINECRAFT = "net/minecraft/";
     static final String MOJANG = "com/mojang/";
     static final String FORGE = "net/minecraftforge/";
+    static final String NEOFORGE = "net/neoforged/";
 }
