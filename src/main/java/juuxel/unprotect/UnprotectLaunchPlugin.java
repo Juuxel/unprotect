@@ -24,7 +24,7 @@ public final class UnprotectLaunchPlugin implements ILaunchPluginService {
      * <p>Possible values (case-insensitive with respect to {@link java.util.Locale#ROOT}):
      * <ul>
      *     <li>{@code all}: apply to all classes</li>
-     *     <li>{@code minecraft+forge} (default): apply to Minecraft and Forge classes</li>
+     *     <li>{@code minecraft+forge} (default): apply to Minecraft and (Neo)Forge classes</li>
      *     <li>{@code none}: disable Unprotect completely and apply to no classes</li>
      * </ul>
      *
@@ -46,7 +46,7 @@ public final class UnprotectLaunchPlugin implements ILaunchPluginService {
      */
     public static final String MAPPING_LOCATION_SYSTEM_PROPERTY = Transformation.MAPPING_LOCATION_SYSTEM_PROPERTY;
 
-    private final Transformation transformation = new Transformation();
+    private final Transformation transformation = new Transformation("ModLauncher");
 
     @Override
     public String name() {

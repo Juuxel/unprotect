@@ -37,7 +37,7 @@ public final class UnprotectAgent {
     }
 
     private static final class UnprotectTransformer implements ClassFileTransformer {
-        private final Transformation transformation = new Transformation();
+        private final Transformation transformation = new Transformation("Java agent");
 
         @Override
         public byte @Nullable [] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {

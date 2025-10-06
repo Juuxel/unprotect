@@ -29,18 +29,21 @@ final class Transformation {
 
     static final Logger LOGGER = LogManager.getLogger("unprotect");
 
-    private @Nullable Target target;
+    private final Target target;
     private @Nullable TargetCache targetCache;
 
-    private Target getTarget() {
-        if (target == null) {
-            String targetId = System.getProperty(TARGET_SYSTEM_PROPERTY, Target.MINECRAFT_AND_FORGE.id);
-            target = Target.BY_ID.get(targetId);
+    Transformation(String backendName) {
+        target = loadTarget();
+        LOGGER.info("Initializing Unprotect using {} backend, target: {}", backendName, target.id);
+    }
 
-            if (target == null) {
-                LOGGER.error("Unknown Unprotect target: {} (available: {}), falling back to minecraft+forge", targetId, Target.BY_ID.keySet());
-                target = Target.MINECRAFT_AND_FORGE;
-            }
+    private static Target loadTarget() {
+        String targetId = System.getProperty(TARGET_SYSTEM_PROPERTY, Target.MINECRAFT_AND_FORGE.id);
+        Target target = Target.BY_ID.get(targetId);
+
+        if (target == null) {
+            LOGGER.error("Unknown Unprotect target: {} (available: {}), falling back to minecraft+forge", targetId, Target.BY_ID.keySet());
+            return Target.MINECRAFT_AND_FORGE;
         }
 
         return target;
@@ -51,7 +54,7 @@ final class Transformation {
             return false;
         }
 
-        switch (getTarget()) {
+        switch (target) {
             case ALL:
                 return true;
             case MINECRAFT_AND_FORGE:

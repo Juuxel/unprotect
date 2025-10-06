@@ -12,7 +12,7 @@ import net.neoforged.neoforgespi.transformation.ProcessorName;
 public final class UnprotectClassProcessor implements ClassProcessor {
     private static final ProcessorName NAME = new ProcessorName("unprotect", "processor");
 
-    private final Transformation transformation = new Transformation();
+    private final Transformation transformation = new Transformation("FancyModLoader");
 
     @Override
     public ProcessorName name() {
