@@ -34,7 +34,7 @@ final class Transformation {
 
     Transformation(String backendName) {
         target = loadTarget();
-        LOGGER.info("Initializing Unprotect using {} backend, target: {}", backendName, target.id);
+        LOGGER.info("Initializing Unprotect using {} backend, target: {} ({})", backendName, target.displayName, target.id);
     }
 
     private static Target loadTarget() {
@@ -112,15 +112,17 @@ final class Transformation {
     }
 
     private enum Target {
-        ALL("all"),
-        MINECRAFT_AND_FORGE("minecraft+forge"),
-        NONE("none");
+        ALL("all", "all classes"),
+        MINECRAFT_AND_FORGE("minecraft+forge", "Minecraft and loader classes"),
+        NONE("none", "no classes");
 
         private static final Map<String, Target> BY_ID = new HashMap<>();
         private final String id;
+        private final String displayName;
 
-        Target(String id) {
+        Target(String id, String displayName) {
             this.id = id;
+            this.displayName = displayName;
         }
 
         static {
