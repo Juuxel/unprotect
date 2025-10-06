@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.juuxel"
-version = "1.3.1"
+version = "1.4.0"
 
 // A source set that builds a module for Java 21+.
 val java21SourceSet = sourceSets.register("java21") {
