@@ -4,14 +4,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+// Must contain everything from the one in src/java16!
+
 /**
  * Provides Unprotect, a ModLauncher plugin and Java agent.
  *
- * <p>Unprotect has two runtime implementations:
+ * <p>Unprotect has three runtime implementations:
  * <ul>
  *     <li>{@link juuxel.unprotect.UnprotectLaunchPlugin} as a ModLauncher
  *     {@linkplain cpw.mods.modlauncher.serviceapi.ILaunchPluginService launch plugin service}
  *     <li>{@link juuxel.unprotect.UnprotectAgent} as an agent class
+ *     <li>{@link juuxel.unprotect.UnprotectClassProcessor} as a FancyModLoader class processor
  * </ul>
  */
 module io.github.juuxel.unprotect {
@@ -27,4 +30,5 @@ module io.github.juuxel.unprotect {
     requires static java.instrument;
 
     provides cpw.mods.modlauncher.serviceapi.ILaunchPluginService with juuxel.unprotect.UnprotectLaunchPlugin;
+    provides net.neoforged.neoforgespi.transformation.ClassProcessor with juuxel.unprotect.UnprotectClassProcessor;
 }

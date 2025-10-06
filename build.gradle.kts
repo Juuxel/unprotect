@@ -8,8 +8,15 @@ plugins {
 group = "io.github.juuxel"
 version = "1.3.1"
 
-val modularityJavaVersion = 16
-val modularitySourceSet = sourceSets.register("modularity") {
+// A source set that builds a module for Java 21+.
+val java21SourceSet = sourceSets.register("java21") {
+    java {
+        srcDirs(sourceSets.main.map { it.java.srcDirs })
+    }
+}
+
+// A source set that builds a module for Java 16-20.
+val java16SourceSet = sourceSets.register("java16") {
     java {
         srcDirs(sourceSets.main.map { it.java.srcDirs })
     }
@@ -36,7 +43,28 @@ java {
 
 repositories {
     mavenCentral()
-    maven("https://maven.minecraftforge.net")
+    maven("https://libraries.minecraft.net")
+
+    exclusiveContent {
+        forRepository {
+            maven("https://maven.minecraftforge.net")
+        }
+
+        filter {
+            includeGroup("cpw.mods")
+        }
+    }
+
+    exclusiveContent {
+        forRepository {
+            maven("https://maven.neoforged.net/releases")
+        }
+
+        filter {
+            includeGroupAndSubgroups("net.neoforged")
+            includeGroupAndSubgroups("net.minecraftforge")
+        }
+    }
 }
 
 dependencies {
@@ -44,10 +72,15 @@ dependencies {
     compileOnly(libs.modlauncher4)
     implementation(libs.log4j.api)
 
-    "modularityCompileOnly"(libs.jetbrains.annotations)
-    "modularityCompileOnly"(libs.modlauncher9)
-    "modularityImplementation"(libs.log4j.api)
-    "modularityCompileOnly"(fakeFancyModLoaderJar.map { it.outputs.files })
+    "java16CompileOnly"(libs.jetbrains.annotations)
+    "java16CompileOnly"(libs.modlauncher9)
+    "java16Implementation"(libs.log4j.api)
+    "java16CompileOnly"(fakeFancyModLoaderJar.map { it.outputs.files })
+
+    "java21CompileOnly"(libs.fancymodloader)
+    "java21CompileOnly"(libs.jetbrains.annotations)
+    "java21CompileOnly"(libs.modlauncher9)
+    "java21CompileOnly"(libs.log4j.api)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.modlauncher4)
@@ -59,21 +92,31 @@ tasks {
         options.release.set(8)
     }
 
-    "compileModularityJava"(JavaCompile::class) {
-        options.release.set(modularityJavaVersion)
+    "compileJava16Java"(JavaCompile::class) {
+        options.release.set(16)
+        options.compilerArgs.addAll(listOf("--module-version", project.version.toString()))
+    }
+
+    "compileJava21Java"(JavaCompile::class) {
+        options.release.set(21)
         options.compilerArgs.addAll(listOf("--module-version", project.version.toString()))
     }
 
     javadoc {
-        source = modularitySourceSet.get().allJava
-        classpath = modularitySourceSet.get().compileClasspath
+        source = java21SourceSet.get().allJava
+        classpath = java21SourceSet.get().compileClasspath
     }
 
     jar {
         from("LICENSE")
-        from(modularitySourceSet.map { it.output }) {
+        from(java16SourceSet.map { it.output }) {
             include("module-info.class")
-            into("META-INF/versions/$modularityJavaVersion")
+            into("META-INF/versions/16")
+        }
+        from(java21SourceSet.map { it.output }) {
+            include("juuxel/unprotect/UnprotectClassProcessor*.class")
+            include("module-info.class")
+            into("META-INF/versions/21")
         }
         manifest {
             attributes(
@@ -85,9 +128,14 @@ tasks {
 
     "sourcesJar"(Jar::class) {
         from("LICENSE")
-        from(modularitySourceSet.map { it.allSource }) {
+        from(java16SourceSet.map { it.allSource }) {
             include("module-info.java")
-            into("META-INF/versions/$modularityJavaVersion")
+            into("META-INF/versions/16")
+        }
+        from(java21SourceSet.map { it.allSource }) {
+            include("juuxel/unprotect/UnprotectClassProcessor.java")
+            include("module-info.java")
+            into("META-INF/versions/21")
         }
     }
 
