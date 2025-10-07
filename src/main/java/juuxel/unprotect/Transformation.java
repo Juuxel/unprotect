@@ -20,19 +20,45 @@ import org.objectweb.asm.tree.MethodNode;
 import java.util.HashMap;
 import java.util.Map;
 
-final class Transformation {
+public final class Transformation {
     // Package-private doesn't have its own access flag and is used when there's
     // none of these other flags.
     private static final int ACCESS_MASK = Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE;
-    static final String TARGET_SYSTEM_PROPERTY = "unprotect.target";
-    static final String MAPPING_LOCATION_SYSTEM_PROPERTY = "unprotect.mappings";
+
+    /**
+     * A system property ({@value}) for determining which classes to transform.
+     *
+     * <p>Possible values (case-insensitive with respect to {@link java.util.Locale#ROOT}):
+     * <ul>
+     *     <li>{@code all}: apply to all classes</li>
+     *     <li>{@code minecraft+forge} (default): apply to Minecraft and (Neo)Forge classes</li>
+     *     <li>{@code none}: disable Unprotect completely and apply to no classes</li>
+     * </ul>
+     *
+     * @since 1.1.0
+     */
+    public static final String TARGET_SYSTEM_PROPERTY = "unprotect.target";
+
+    /**
+     * A system property ({@value}) for determining where to load mappings for
+     * the {@code minecraft+forge} {@linkplain #TARGET_SYSTEM_PROPERTY target}.
+     *
+     * <p>The value should be a file path to a zip containing the mapping files at {@code mappings/mappings.tiny}
+     * in Tiny v2 format. It can also be a list of file paths separated by {@link java.io.File#pathSeparator},
+     * of which the first suitable one will be used.
+     *
+     * <p>If absent, Unprotect will try to load them from the classpath at the same file path.
+     *
+     * @since 1.2.0
+     */
+    public static final String MAPPING_LOCATION_SYSTEM_PROPERTY = "unprotect.mappings";
 
     static final Logger LOGGER = LogManager.getLogger("unprotect");
 
     private final Target target;
     private @Nullable TargetCache targetCache;
 
-    Transformation(String backendName) {
+    public Transformation(String backendName) {
         target = loadTarget();
         LOGGER.info("Initializing Unprotect using {} backend, target: {} ({})", backendName, target.displayName, target.id);
     }
@@ -49,7 +75,7 @@ final class Transformation {
         return target;
     }
 
-    boolean handlesClass(Type classType, boolean isEmpty) {
+    public boolean handlesClass(Type classType, boolean isEmpty) {
         if (isEmpty) {
             return false;
         }
@@ -75,7 +101,7 @@ final class Transformation {
         }
     }
 
-    boolean processClass(ClassNode classNode) {
+    public boolean processClass(ClassNode classNode) {
         boolean changed; // whether the access of anything in this node has changed
 
         int original = classNode.access;

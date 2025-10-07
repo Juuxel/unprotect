@@ -21,8 +21,6 @@ import java.security.ProtectionDomain;
  * The Unprotect agent.
  *
  * <p>Requires the {@link java.instrument} module.
- *
- * <p>The agent supports all system properties documented in {@link UnprotectLaunchPlugin}.
  */
 public final class UnprotectAgent {
     /**

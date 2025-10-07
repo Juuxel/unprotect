@@ -4,9 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package juuxel.unprotect;
+package juuxel.unprotect.modlauncher;
 
 import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
+import juuxel.unprotect.Transformation;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 

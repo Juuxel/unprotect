@@ -1,4 +1,5 @@
 [versions]
+asm = "6.2"
 modlauncher4 = "4.1.0"
 modlauncher9 = "9.0.4"
 jetbrains-annotations = "23.0.0"
@@ -8,6 +9,7 @@ log4j = "2.11.2"
 fancymodloader = "10.0.14"
 
 [libraries]
+asm-tree = { module = "org.ow2.asm:asm-tree", version.ref = "asm" }
 modlauncher4 = { module = "cpw.mods:modlauncher", version.ref = "modlauncher4" }
 modlauncher9 = { module = "cpw.mods:modlauncher", version.ref = "modlauncher9" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
