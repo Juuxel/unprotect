@@ -7,7 +7,7 @@ version = rootProject.version
 
 dependencies {
     implementation(project(":"))
-    implementation(libs.fancymodloader)
+    compileOnly(libs.fancymodloader)
 }
 
 java {

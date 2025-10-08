@@ -25,7 +25,7 @@ val fakeFancyModLoaderJar = tasks.register<Jar>("fakeFancyModLoaderJar") {
 
 dependencies {
     implementation(project(":"))
-    implementation(libs.modlauncher4)
+    compileOnly(libs.modlauncher4)
 
     "java16CompileOnly"(project(":"))
     "java16CompileOnly"(libs.modlauncher9)
